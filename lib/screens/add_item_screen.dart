@@ -101,7 +101,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(!isEdit! ? 'Add Item' : 'Edit'),
+        title: const Text('Add Item'),
         actions: [
           IconButton(
             onPressed: onDone,
