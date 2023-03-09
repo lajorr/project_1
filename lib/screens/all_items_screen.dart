@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/provider/item_provider.dart';
 import 'package:my_app/screens/add_item_screen.dart';
+import 'package:my_app/screens/item_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class AllItemsScreen extends StatelessWidget {
@@ -14,7 +15,8 @@ class AllItemsScreen extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(AddItemScreen.routeName);
+                Navigator.of(context).pushNamed(AddItemScreen.routeName,
+                    arguments: {'isEdit': false});
               },
               icon: const Icon(
                 Icons.add,
@@ -75,17 +77,25 @@ class AllItemsScreen extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
-                                  child: GridTile(
-                                    footer: GridTileBar(
-                                      backgroundColor: Colors.black54,
-                                      title: Text(
-                                        data.items[index].name,
-                                        textAlign: TextAlign.center,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        ItemDetailScreen.routeName,
+                                        arguments: data.items[index].id,
+                                      );
+                                    },
+                                    child: GridTile(
+                                      footer: GridTileBar(
+                                        backgroundColor: Colors.black54,
+                                        title: Text(
+                                          data.items[index].name,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    child: Image.file(
-                                      data.items[index].image!,
-                                      fit: BoxFit.cover,
+                                      child: Image.file(
+                                        data.items[index].image,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 );

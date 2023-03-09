@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/provider/item_provider.dart';
 import 'package:my_app/screens/add_item_screen.dart';
 import 'package:my_app/screens/all_items_screen.dart';
+import 'package:my_app/screens/item_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routes: {
             AddItemScreen.routeName: (context) => const AddItemScreen(),
+            ItemDetailScreen.routeName: (context) => const ItemDetailScreen(),
           },
           home: const AllItemsScreen(),
         );

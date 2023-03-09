@@ -6,7 +6,7 @@ class ItemModel {
   final String name;
   final double price;
   final String description;
-  final File? image;
+  final File image;
 
   ItemModel({
     required this.id,

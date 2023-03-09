@@ -27,7 +27,7 @@ class ItemGrid extends StatelessWidget {
           ),
         ),
         child: Image.file(
-          item.image!,
+          item.image,
           fit: BoxFit.cover,
         ),
       ),

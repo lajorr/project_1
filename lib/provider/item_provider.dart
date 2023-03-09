@@ -36,7 +36,7 @@ class ItemProvider with ChangeNotifier {
       'id': newItem.id,
       'title': newItem.name,
       'price': newItem.price,
-      'image': newItem.image!.path,
+      'image': newItem.image.path,
       'description': newItem.description,
     });
   }
@@ -56,6 +56,12 @@ class ItemProvider with ChangeNotifier {
           ),
         )
         .toList();
+    notifyListeners();
+  }
+
+  Future delete(ItemModel item) async {
+    _items.removeWhere((element) => element.id == item.id);
+    DbHelper.delete(item.id);
     notifyListeners();
   }
 }

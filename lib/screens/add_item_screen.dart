@@ -34,13 +34,51 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final descController = TextEditingController();
 
   File? selectedImage;
-  void pickImage() async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.camera);
+  File? savedImage;
 
-    setState(() {
-      selectedImage = File(image!.path);
-    });
+  void pickImage() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SizedBox(
+          height: 130,
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () => getImage(ImageSource.camera),
+              ),
+              const Divider(thickness: 2),
+              ListTile(
+                leading: const Icon(Icons.photo),
+                title: const Text('gallery'),
+                onTap: () => getImage(ImageSource.gallery),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    print(selectedImage);
+  }
+
+  void getImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: source,
+      );
+      print(image);
+
+      setState(() {
+        selectedImage = File(image!.path);
+      });
+    } on Exception catch (e) {
+      print(e);
+    }
+
+    Navigator.of(context).pop();
   }
 
   void onDone() {
@@ -58,11 +96,30 @@ class _AddItemScreenState extends State<AddItemScreen> {
     Navigator.of(context).pop();
   }
 
+  bool? isEdit;
+
   @override
   Widget build(BuildContext context) {
+    final data =
+        ModalRoute.of(context)!.settings.arguments as Map<String, Object>?;
+    isEdit = data!['isEdit'] as bool;
+    nameController.text = !isEdit!
+        ? ''
+        : data['title'] == null
+            ? ''
+            : data['title'] as String;
+    priceController.text = !isEdit!
+        ? ''
+        : (data['price'] == null ? '' : data['price'] as double).toString();
+    descController.text = !isEdit!
+        ? ''
+        : data['desc'] == null
+            ? ''
+            : data['desc'] as String;
+    savedImage = !isEdit! ? null : data['image'] as File;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Item'),
+        title: Text(!isEdit! ? 'Add Item' : 'Edit'),
         actions: [
           IconButton(
             onPressed: onDone,
@@ -82,27 +139,44 @@ class _AddItemScreenState extends State<AddItemScreen> {
               ),
               Stack(
                 alignment: Alignment.center,
+                clipBehavior: Clip.none,
                 children: [
                   Center(
                     child: CircleAvatar(
-                      backgroundImage: selectedImage == null
-                          ? null
-                          : FileImage(
-                              selectedImage!,
-                            ),
+                      backgroundImage: isEdit!
+                          ? savedImage == null
+                              ? null
+                              : FileImage(
+                                  savedImage!,
+                                )
+                          : selectedImage == null
+                              ? null
+                              : FileImage(
+                                  selectedImage!,
+                                ),
                       radius: 60,
                     ),
                   ),
                   Positioned(
-                    bottom: 10,
-                    left: 200,
-                    child: IconButton(
-                        onPressed: pickImage,
-                        icon: Icon(
-                          Icons.add_a_photo,
-                          color: Theme.of(context).primaryColor,
-                          size: 40,
-                        )),
+                    bottom: 0,
+                    left: 210,
+                    child: CircleAvatar(
+                      radius: 23,
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        // backgroundColor: Col,
+                        radius: 20,
+                        child: Center(
+                          child: IconButton(
+                              onPressed: pickImage,
+                              icon: const Icon(
+                                Icons.photo_camera,
+                                color: Colors.white,
+                                size: 25,
+                              )),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

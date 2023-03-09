@@ -23,6 +23,16 @@ class DbHelper {
 
   static Future<List<Map<String, dynamic>>> getData() async {
     final db = await DbHelper.database();
+
     return db.query('itemTable');
+  }
+
+  static Future delete(String id) async {
+    final db = await DbHelper.database();
+    db.delete(
+      "itemTable",
+      where: 'id = ? ',
+      whereArgs: [id],
+    );
   }
 }
