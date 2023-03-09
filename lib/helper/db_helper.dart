@@ -35,4 +35,9 @@ class DbHelper {
       whereArgs: [id],
     );
   }
+
+  static Future update(Map<String, dynamic> data, String id) async {
+    final db = await DbHelper.database();
+    db.update("itemTable", data, where: 'id = ?', whereArgs: [id]);
+  }
 }

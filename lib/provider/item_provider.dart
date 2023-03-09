@@ -64,4 +64,17 @@ class ItemProvider with ChangeNotifier {
     DbHelper.delete(item.id);
     notifyListeners();
   }
+
+  Future update(String id, ItemModel updatedItem) async {
+    final index = _items.indexWhere((element) => element.id == id);
+    _items[index] = updatedItem;
+    notifyListeners();
+    DbHelper.update({
+      // 'id': updatedItem.id,
+      'title': updatedItem.name,
+      'price': updatedItem.price,
+      'description': updatedItem.description,
+      'image': updatedItem.image.path,
+    }, updatedItem.id);
+  }
 }

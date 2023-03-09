@@ -21,6 +21,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final priceController = TextEditingController();
   final descController = TextEditingController();
   File? selectedImage;
+  var isEdit = true;
 
   void _addContainers() {
     setState(() {
@@ -34,7 +35,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     });
   }
 
-  void pickImage() {
+  void pickImage(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -45,13 +46,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
               ListTile(
                 leading: const Icon(Icons.photo_camera),
                 title: const Text('Camera'),
-                onTap: () => getImage(ImageSource.camera),
+                onTap: () => getImage(ImageSource.camera, context),
               ),
               const Divider(thickness: 2),
               ListTile(
                 leading: const Icon(Icons.photo),
                 title: const Text('gallery'),
-                onTap: () => getImage(ImageSource.gallery),
+                onTap: () => getImage(ImageSource.gallery, context),
               ),
             ],
           ),
@@ -60,7 +61,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  void getImage(ImageSource source) async {
+  void getImage(ImageSource source, BuildContext context) async {
     try {
       final picker = ImagePicker();
       final image = await picker.pickImage(
@@ -78,24 +79,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
     Navigator.of(context).pop();
   }
 
-  void onDone() {
-    if (nameController.text.trim().isEmpty || priceController.text.isEmpty) {
-      return;
-    }
-    Provider.of<ItemProvider>(context, listen: false).addItem(
-      nameController.text.trim(),
-      double.parse(
-        priceController.text.trim(),
-      ),
-      descController.text.trim(),
-      selectedImage!,
-    );
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var isEdit = true;
     final itemData = ModalRoute.of(context)!.settings.arguments as ItemModel?;
     if (itemData == null) {
       isEdit = false;
@@ -106,12 +91,40 @@ class _AddItemScreenState extends State<AddItemScreen> {
       descController.text = itemData.description;
       selectedImage = itemData.image;
     }
+
+    void onDone(BuildContext context) {
+      if (!isEdit) {
+        if (nameController.text.trim().isEmpty ||
+            priceController.text.isEmpty) {
+          return;
+        }
+        Provider.of<ItemProvider>(context, listen: false).addItem(
+          nameController.text.trim(),
+          double.parse(
+            priceController.text.trim(),
+          ),
+          descController.text.trim(),
+          selectedImage!,
+        );
+      } else if (isEdit) {
+        final ItemModel updatedValue = ItemModel(
+            id: itemData!.id,
+            name: nameController.text,
+            price: double.parse(priceController.text),
+            description: descController.text,
+            image: selectedImage!);
+        Provider.of<ItemProvider>(context, listen: false)
+            .update(itemData.id, updatedValue);
+      }
+      Navigator.of(context).pop();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(isEdit ? 'Edit' : 'Add Item'),
         actions: [
           IconButton(
-            onPressed: onDone,
+            onPressed: () => onDone(context),
             icon: const Icon(
               Icons.done,
             ),
@@ -151,7 +164,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                         radius: 20,
                         child: Center(
                           child: IconButton(
-                              onPressed: pickImage,
+                              onPressed: () => pickImage(context),
                               icon: const Icon(
                                 Icons.photo_camera,
                                 color: Colors.white,
@@ -273,7 +286,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
             },
             onEditingComplete: () {
               print(valueText);
-              FocusScope.of(context).unfocus();
             },
             maxLength: 33,
             decoration: const InputDecoration(
