@@ -29,13 +29,6 @@ class ItemDetailScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 AddItemScreen.routeName,
-                arguments: {
-                  'title': selectedItem.name,
-                  'price': selectedItem.price,
-                  'desc': selectedItem.description,
-                  'image': selectedItem.image,
-                  'isEdit' : true,
-                },
               );
             },
             icon: const Icon(

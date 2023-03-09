@@ -34,7 +34,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final descController = TextEditingController();
 
   File? selectedImage;
-  File? savedImage;
 
   void pickImage() {
     showDialog(
@@ -100,23 +99,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context)!.settings.arguments as Map<String, Object>?;
-    isEdit = data!['isEdit'] as bool;
-    nameController.text = !isEdit!
-        ? ''
-        : data['title'] == null
-            ? ''
-            : data['title'] as String;
-    priceController.text = !isEdit!
-        ? ''
-        : (data['price'] == null ? '' : data['price'] as double).toString();
-    descController.text = !isEdit!
-        ? ''
-        : data['desc'] == null
-            ? ''
-            : data['desc'] as String;
-    savedImage = !isEdit! ? null : data['image'] as File;
     return Scaffold(
       appBar: AppBar(
         title: Text(!isEdit! ? 'Add Item' : 'Edit'),
@@ -143,17 +125,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 children: [
                   Center(
                     child: CircleAvatar(
-                      backgroundImage: isEdit!
-                          ? savedImage == null
-                              ? null
-                              : FileImage(
-                                  savedImage!,
-                                )
-                          : selectedImage == null
-                              ? null
-                              : FileImage(
-                                  selectedImage!,
-                                ),
+                      backgroundImage: selectedImage == null
+                          ? null
+                          : FileImage(
+                              selectedImage!,
+                            ),
                       radius: 60,
                     ),
                   ),

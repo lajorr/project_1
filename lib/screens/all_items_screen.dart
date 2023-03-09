@@ -15,8 +15,9 @@ class AllItemsScreen extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(AddItemScreen.routeName,
-                    arguments: {'isEdit': false});
+                Navigator.of(context).pushNamed(
+                  AddItemScreen.routeName,
+                );
               },
               icon: const Icon(
                 Icons.add,
