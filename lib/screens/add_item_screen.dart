@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_app/model/item_model.dart';
 import 'package:my_app/provider/item_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,10 @@ class AddItemScreen extends StatefulWidget {
 
 class _AddItemScreenState extends State<AddItemScreen> {
   List<Widget> containers = [];
+  final nameController = TextEditingController();
+  final priceController = TextEditingController();
+  final descController = TextEditingController();
+  File? selectedImage;
 
   void _addContainers() {
     setState(() {
@@ -28,12 +33,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
       containers.removeAt(index);
     });
   }
-
-  final nameController = TextEditingController();
-  final priceController = TextEditingController();
-  final descController = TextEditingController();
-
-  File? selectedImage;
 
   void pickImage() {
     showDialog(
@@ -59,7 +58,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
         ),
       ),
     );
-    print(selectedImage);
   }
 
   void getImage(ImageSource source) async {
@@ -95,13 +93,22 @@ class _AddItemScreenState extends State<AddItemScreen> {
     Navigator.of(context).pop();
   }
 
-  bool? isEdit;
-
   @override
   Widget build(BuildContext context) {
+    var isEdit = true;
+    final itemData = ModalRoute.of(context)!.settings.arguments as ItemModel?;
+    if (itemData == null) {
+      isEdit = false;
+    }
+    if (isEdit && itemData != null) {
+      nameController.text = itemData.name;
+      priceController.text = itemData.price.toString();
+      descController.text = itemData.description;
+      selectedImage = itemData.image;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Item'),
+        title: Text(isEdit ? 'Edit' : 'Add Item'),
         actions: [
           IconButton(
             onPressed: onDone,

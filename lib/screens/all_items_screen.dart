@@ -17,6 +17,7 @@ class AllItemsScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   AddItemScreen.routeName,
+                  arguments: null,
                 );
               },
               icon: const Icon(
