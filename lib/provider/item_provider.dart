@@ -41,22 +41,48 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<void> fetchAndSetItem() async {
-    final data = await DbHelper.getData();
-    _items = data
-        .map(
-          (item) => ItemModel(
-            id: item['id'],
-            name: item['title'],
-            price: item['price'],
-            description: item['description'],
-            image: File(
-              item['image'],
+  Future<void> fetchAndSetItem(String? query) async {
+    if (query == null) {
+      final data = await DbHelper.getData();
+      _items = data
+          .map(
+            (item) => ItemModel(
+              id: item['id'],
+              name: item['title'],
+              price: item['price'],
+              description: item['description'],
+              image: File(
+                item['image'],
+              ),
             ),
-          ),
-        )
-        .toList();
-    notifyListeners();
+          )
+          .toList();
+      notifyListeners();
+    } else {
+      final data = await DbHelper.getData();
+      final newData = data
+          .where(
+            (element) => (element['title'] as String).toLowerCase().contains(
+                  query.toLowerCase(),
+                ),
+          )
+          .toList();
+
+      _items = newData
+          .map(
+            (item) => ItemModel(
+              id: item['id'],
+              name: item['title'],
+              price: item['price'],
+              description: item['description'],
+              image: File(
+                item['image'],
+              ),
+            ),
+          )
+          .toList();
+      notifyListeners();
+    }
   }
 
   Future delete(ItemModel item) async {

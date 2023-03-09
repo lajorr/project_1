@@ -5,9 +5,15 @@ import 'package:my_app/screens/item_detail_screen.dart';
 import 'package:my_app/widgets/drawer_widget.dart';
 import 'package:provider/provider.dart';
 
-class AllItemsScreen extends StatelessWidget {
+class AllItemsScreen extends StatefulWidget {
   const AllItemsScreen({super.key});
 
+  @override
+  State<AllItemsScreen> createState() => _AllItemsScreenState();
+}
+
+class _AllItemsScreenState extends State<AllItemsScreen> {
+  String? input;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +41,13 @@ class AllItemsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: 40,
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      input = value;
+                    });
+                  },
+                  decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -49,7 +60,7 @@ class AllItemsScreen extends StatelessWidget {
               ),
               FutureBuilder(
                 future: Provider.of<ItemProvider>(context, listen: false)
-                    .fetchAndSetItem(),
+                    .fetchAndSetItem(input),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
