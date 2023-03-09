@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/provider/item_provider.dart';
 import 'package:my_app/screens/add_item_screen.dart';
 import 'package:my_app/screens/item_detail_screen.dart';
+import 'package:my_app/widgets/drawer_widget.dart';
 import 'package:provider/provider.dart';
 
 class AllItemsScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class AllItemsScreen extends StatelessWidget {
             ),
           ],
         ),
-        drawer: const Drawer(),
+        drawer: const DrawerWidget(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
