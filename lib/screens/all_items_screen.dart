@@ -120,6 +120,17 @@ class _AllItemsScreenState extends State<AllItemsScreen> {
                                   mainAxisSpacing: 10,
                                 ),
                                 itemBuilder: (context, index) {
+                                  final check = Provider.of<ItemProvider>(
+                                              context,
+                                              listen: false)
+                                          .isChecked ??
+                                      false;
+                                  final sortedList = check
+                                      ? (data.items
+                                        ..sort(
+                                          (a, b) => a.name.compareTo(b.name),
+                                        ))
+                                      : data.items;
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(25),
                                     child: GestureDetector(
@@ -133,12 +144,12 @@ class _AllItemsScreenState extends State<AllItemsScreen> {
                                         footer: GridTileBar(
                                           backgroundColor: Colors.black54,
                                           title: Text(
-                                            data.items[index].name,
+                                            sortedList[index].name,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                         child: Image.file(
-                                          data.items[index].image,
+                                          sortedList[index].image,
                                           fit: BoxFit.cover,
                                         ),
                                       ),

@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/item_provider.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
@@ -11,6 +14,8 @@ class DrawerWidget extends StatefulWidget {
 
 class _DrawerWidgetState extends State<DrawerWidget> {
   bool onSelect = false;
+  bool? isChecked;
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -43,7 +48,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               color: Colors.blue[100],
               child: ListTile(
                 title: const Text(
-                  'Filters:',
+                  'Sort By:',
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -64,66 +69,55 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
             if (onSelect)
               Container(
-                  height: 190,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 10,
-                  ),
-                  color: Colors.blue[200],
-                  child: ListView(
-                    children: const [
-                      FilterTile(filterBy: 'By Name'),
-                      FilterTile(filterBy: 'By Price'),
-                      FilterTile(filterBy: 'By ...'),
-                    ],
-                  )),
+                height: 190,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                color: Colors.blue[200],
+                child: Consumer<ItemProvider>(
+                  builder: (context, value, child) {
+                    isChecked =
+                        value.isChecked == null ? false : value.isChecked!;
+                    return ListView(
+                      children: [
+                        ListTile(
+                          title: const Text(
+                            'Name',
+                            style: TextStyle(
+                              fontSize: 22,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  isChecked = !isChecked!;
+                                  print(isChecked);
+                                  Provider.of<ItemProvider>(context,
+                                          listen: false)
+                                      .setBool(isChecked!);
+                                },
+                              );
+                            },
+                            icon: Icon(
+                              isChecked!
+                                  ? Icons.check_box
+                                  : Icons.check_box_outline_blank,
+                            ),
+                            // size: 30,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class FilterTile extends StatefulWidget {
-  const FilterTile({
-    Key? key,
-    required this.filterBy,
-  }) : super(key: key);
-  final String filterBy;
-
-  @override
-  State<FilterTile> createState() => _FilterTileState();
-}
-
-class _FilterTileState extends State<FilterTile> {
-  var isChecked = false;
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        widget.filterBy,
-        style: const TextStyle(
-          fontSize: 22,
-        ),
-      ),
-      trailing: IconButton(
-        onPressed: () {
-          setState(() {
-            isChecked = !isChecked;
-          });
-        },
-        icon: Icon(
-          isChecked ? Icons.check_box : Icons.check_box_outline_blank,
-        ),
-        // size: 30,
-        color: Colors.black,
-      ),
-      // onTap: () {
-      //   setState(() {
-      //     onSelect = !onSelect;
-      //   });
-      // },
     );
   }
 }
