@@ -7,16 +7,16 @@ import 'package:my_app/model/item_model.dart';
 
 class ItemProvider with ChangeNotifier {
   List<ItemModel> _items = [];
-  bool? _isChecked;
+  bool? _isNameChecked;
 
   List<ItemModel> get items {
     return [..._items];
   }
 
-  bool? get isChecked => _isChecked;
+  bool? get isNameChecked => _isNameChecked;
 
-  void setBool(bool value) {
-    _isChecked = value;
+  void setNameBool(bool value) {
+    _isNameChecked = value;
     notifyListeners();
   }
 

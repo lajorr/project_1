@@ -14,7 +14,7 @@ class DrawerWidget extends StatefulWidget {
 
 class _DrawerWidgetState extends State<DrawerWidget> {
   bool onSelect = false;
-  bool? isChecked;
+  bool? isNameChecked;
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +78,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 color: Colors.blue[200],
                 child: Consumer<ItemProvider>(
                   builder: (context, value, child) {
-                    isChecked =
-                        value.isChecked == null ? false : value.isChecked!;
+                    isNameChecked = value.isNameChecked == null
+                        ? false
+                        : value.isNameChecked!;
+
                     return ListView(
                       children: [
                         ListTile(
                           title: const Text(
-                            'Name',
+                            'Name (Asc)',
                             style: TextStyle(
                               fontSize: 22,
                             ),
@@ -93,16 +95,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             onPressed: () {
                               setState(
                                 () {
-                                  isChecked = !isChecked!;
-                                  print(isChecked);
+                                  isNameChecked = !isNameChecked!;
+                                  print(isNameChecked);
                                   Provider.of<ItemProvider>(context,
                                           listen: false)
-                                      .setBool(isChecked!);
+                                      .setNameBool(isNameChecked!);
                                 },
                               );
                             },
                             icon: Icon(
-                              isChecked!
+                              isNameChecked!
                                   ? Icons.check_box
                                   : Icons.check_box_outline_blank,
                             ),
@@ -110,6 +112,34 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             color: Colors.black,
                           ),
                         ),
+                        // ListTile(
+                        //   title: const Text(
+                        //     'Price (Asc)',
+                        //     style: TextStyle(
+                        //       fontSize: 22,
+                        //     ),
+                        //   ),
+                        //   trailing: IconButton(
+                        //     onPressed: () {
+                        //       setState(
+                        //         () {
+                        //           isPriceChecked = !isPriceChecked!;
+
+                        //           Provider.of<ItemProvider>(context,
+                        //                   listen: false)
+                        //               .setPriceBool(isPriceChecked!);
+                        //         },
+                        //       );
+                        //     },
+                        //     icon: Icon(
+                        //       isPriceChecked!
+                        //           ? Icons.check_box
+                        //           : Icons.check_box_outline_blank,
+                        //     ),
+                        //     // size: 30,
+                        //     color: Colors.black,
+                        //   ),
+                        // ),
                       ],
                     );
                   },

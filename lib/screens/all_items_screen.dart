@@ -120,36 +120,38 @@ class _AllItemsScreenState extends State<AllItemsScreen> {
                                   mainAxisSpacing: 10,
                                 ),
                                 itemBuilder: (context, index) {
-                                  final check = Provider.of<ItemProvider>(
+                                  final isNameSort = Provider.of<ItemProvider>(
                                               context,
                                               listen: false)
-                                          .isChecked ??
+                                          .isNameChecked ??
                                       false;
-                                  final sortedList = check
+
+                                  final nameSortedList = isNameSort
                                       ? (data.items
                                         ..sort(
-                                          (a, b) => a.name.compareTo(b.name),
+                                          (a, b) => a.price.compareTo(b.price),
                                         ))
                                       : data.items;
+
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(25),
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.of(context).pushNamed(
                                           ItemDetailScreen.routeName,
-                                          arguments: data.items[index].id,
+                                          arguments: nameSortedList[index].id,
                                         );
                                       },
                                       child: GridTile(
                                         footer: GridTileBar(
                                           backgroundColor: Colors.black54,
                                           title: Text(
-                                            sortedList[index].name,
+                                            nameSortedList[index].name,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                         child: Image.file(
-                                          sortedList[index].image,
+                                          nameSortedList[index].image,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
