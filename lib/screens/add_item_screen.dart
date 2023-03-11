@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/model/item_model.dart';
 import 'package:my_app/provider/item_provider.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart' as syspath;
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -21,17 +23,21 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final priceController = TextEditingController();
   final descController = TextEditingController();
   File? selectedImage;
+  File? savedImage;
   var isEdit = true;
+  var isAddable = true;
 
   void _addContainers() {
     setState(() {
       containers.add(containerContent());
+      isAddable = false;
     });
   }
 
   void removeContainer(int index) {
     setState(() {
       containers.removeAt(index);
+      isAddable = true;
     });
   }
 
@@ -69,8 +75,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
       );
       print(image);
 
+      final dir = await syspath.getApplicationDocumentsDirectory();
+      final fileName = basename(image!.path);
+      final imageFile = File(image.path);
+      savedImage = await imageFile.copy('${dir.path}/$fileName');
+
       setState(() {
-        selectedImage = File(image!.path);
+        selectedImage = File(image.path);
       });
     } on Exception catch (e) {
       print(e);
@@ -104,7 +115,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             priceController.text.trim(),
           ),
           descController.text.trim(),
-          selectedImage!,
+          savedImage!,
         );
       } else if (isEdit) {
         final ItemModel updatedValue = ItemModel(
@@ -112,7 +123,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             name: nameController.text,
             price: double.parse(priceController.text),
             description: descController.text,
-            image: selectedImage!);
+            image: savedImage!);
         Provider.of<ItemProvider>(context, listen: false)
             .update(itemData.id, updatedValue);
       }
@@ -228,7 +239,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     Icons.add_circle,
                     size: 30,
                   ),
-                  onTap: _addContainers,
+                  onTap: isAddable ? _addContainers : null,
                 ),
               ),
               const SizedBox(
@@ -262,17 +273,20 @@ class _AddItemScreenState extends State<AddItemScreen> {
     String? valueText;
     return Column(
       children: [
-        const SizedBox(
+        SizedBox(
           height: 40,
           width: double.infinity,
           child: TextField(
-            maxLength: 33,
-            decoration: InputDecoration(
+            maxLength: 30,
+            onChanged: (value) {
+              fieldText = value;
+            },
+            decoration: const InputDecoration(
               counterText: '',
               hintText: 'Field Name',
               border: OutlineInputBorder(borderSide: BorderSide.none),
             ),
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -287,7 +301,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             onEditingComplete: () {
               print(valueText);
             },
-            maxLength: 33,
+            maxLength: 30,
             decoration: const InputDecoration(
               counterText: '',
               hintText: 'Value',
@@ -321,6 +335,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
             children: [
               Expanded(
                 child: container,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.done),
               ),
               IconButton(
                 onPressed: () => removeContainer(index),

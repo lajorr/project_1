@@ -129,7 +129,7 @@ class _AllItemsScreenState extends State<AllItemsScreen> {
                                   final nameSortedList = isNameSort
                                       ? (data.items
                                         ..sort(
-                                          (a, b) => a.price.compareTo(b.price),
+                                          (a, b) => a.name.compareTo(b.name),
                                         ))
                                       : data.items;
 
