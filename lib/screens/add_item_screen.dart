@@ -25,6 +25,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   File? selectedImage;
   File? savedImage;
   var isEdit = true;
+  Map<String, String> fieldValuePair = {};
 
   void _addContainers() {
     setState(() {
@@ -268,44 +269,86 @@ class _AddItemScreenState extends State<AddItemScreen> {
   Widget containerContent() {
     String? fieldText;
     String? valueText;
-    return Column(
+    return Row(
       children: [
-        SizedBox(
-          height: 40,
-          width: double.infinity,
-          child: TextField(
-            maxLength: 30,
-            onChanged: (value) {
-              fieldText = value;
-            },
-            decoration: const InputDecoration(
-              counterText: '',
-              hintText: 'Field Name',
-              border: OutlineInputBorder(borderSide: BorderSide.none),
-            ),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+        Expanded(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 40,
+                // width: double.infinity,
+                child: TextField(
+                  maxLength: 30,
+                  onChanged: (value) {
+                    fieldText = value;
+                  },
+                  onEditingComplete: () {
+                    if (fieldText != null) {
+                      fieldValuePair.addAll(
+                        {'$fieldText': ''},
+                      );
+                    }
+                  },
+                  onTapOutside: (event) {
+                    if (fieldText != null) {
+                      fieldValuePair.addAll(
+                        {'$fieldText': ''},
+                      );
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    hintText: 'Field Name',
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                  ),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 40,
+                width: double.infinity,
+                child: TextField(
+                  onChanged: (value) {
+                    valueText = value;
+                  },
+                  onEditingComplete: () {
+                    if (valueText != null) {
+                      print(valueText);
+                      fieldValuePair.addAll(
+                        {'$fieldText': '$valueText'},
+                      );
+                    } else {
+                      null;
+                    }
+                  },
+                  onTapOutside: (event) {
+                    if (valueText != null) {
+                      fieldValuePair.addAll(
+                        {'$fieldText': '$valueText'},
+                      );
+                    } else {
+                      null;
+                    }
+                  },
+                  maxLength: 30,
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    hintText: 'Value',
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                  ),
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
           ),
         ),
-        SizedBox(
-          height: 40,
-          width: double.infinity,
-          child: TextField(
-            onChanged: (value) {
-              valueText = value;
-            },
-            onEditingComplete: () {
-              print(valueText);
-            },
-            maxLength: 30,
-            decoration: const InputDecoration(
-              counterText: '',
-              hintText: 'Value',
-              border: OutlineInputBorder(borderSide: BorderSide.none),
-            ),
-            style: const TextStyle(fontSize: 18),
-          ),
+        IconButton(
+          onPressed: () {
+            print(fieldValuePair);
+          },
+          icon: const Icon(Icons.done),
         ),
       ],
     );
@@ -332,10 +375,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
             children: [
               Expanded(
                 child: container,
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.done),
               ),
               IconButton(
                 onPressed: () => removeContainer(index),
