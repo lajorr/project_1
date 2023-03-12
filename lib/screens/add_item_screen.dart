@@ -25,19 +25,16 @@ class _AddItemScreenState extends State<AddItemScreen> {
   File? selectedImage;
   File? savedImage;
   var isEdit = true;
-  var isAddable = true;
 
   void _addContainers() {
     setState(() {
       containers.add(containerContent());
-      isAddable = false;
     });
   }
 
   void removeContainer(int index) {
     setState(() {
       containers.removeAt(index);
-      isAddable = true;
     });
   }
 
@@ -123,7 +120,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             name: nameController.text,
             price: double.parse(priceController.text),
             description: descController.text,
-            image: savedImage!);
+            image: selectedImage!);
         Provider.of<ItemProvider>(context, listen: false)
             .update(itemData.id, updatedValue);
       }
@@ -239,7 +236,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     Icons.add_circle,
                     size: 30,
                   ),
-                  onTap: isAddable ? _addContainers : null,
+                  onTap: _addContainers,
                 ),
               ),
               const SizedBox(
