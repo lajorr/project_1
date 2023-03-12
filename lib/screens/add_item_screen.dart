@@ -118,13 +118,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
         );
       } else if (isEdit) {
         final ItemModel updatedValue = ItemModel(
-          id: itemData!.id,
-          name: nameController.text,
-          price: double.parse(priceController.text),
-          description: descController.text,
-          image: selectedImage!,
-          extraData: fieldValuePair
-        );
+            id: itemData!.id,
+            name: nameController.text,
+            price: double.parse(priceController.text),
+            description: descController.text,
+            image: selectedImage!,
+            extraData: fieldValuePair);
         Provider.of<ItemProvider>(context, listen: false)
             .update(itemData.id, updatedValue);
       }
@@ -347,12 +346,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () {
-            print(fieldValuePair);
-          },
-          icon: const Icon(Icons.done),
-        ),
+        // IconButton(
+        //   onPressed: () {
+        //     print(fieldValuePair);
+        //   },
+        //   icon: const Icon(Icons.done),
+        // ),
       ],
     );
   }
