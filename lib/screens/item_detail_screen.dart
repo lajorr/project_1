@@ -10,15 +10,49 @@ class ItemDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> textWidgets = [];
     final descController = TextEditingController();
 
     final id = ModalRoute.of(context)!.settings.arguments as String?;
     final selectedItem = Provider.of<ItemProvider>(context).findById(id!);
+    final mapLen = selectedItem.extraData!.length;
 
     void onDelete() {
       Provider.of<ItemProvider>(context, listen: false).delete(selectedItem);
       Navigator.of(context).pop();
     }
+
+    Widget newTextWidget(String field, String value) {
+      final capializedField =
+          Provider.of<ItemProvider>(context, listen: false).capitalize(field);
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.5),
+        child: Text(
+          '$capializedField : $value',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
+    // var d = selectedItem.extraData!.keys;
+    // d.expand((element) => )
+    // int i = 0;
+    // while (i < mapLen) {
+    //   // selectedItem.extraData!.map((key, value) {
+    //   //   textWidgets.add(
+    //   //     newTextWidget(key, value),
+    //   //   );
+    //   // });
+    // }
+    var d = selectedItem.extraData!.map((key, value) {
+      textWidgets.add(
+        newTextWidget(key, value),
+      );
+      return MapEntry(key, value);
+    });
 
     descController.text = selectedItem.description;
     return Scaffold(
@@ -72,12 +106,26 @@ class ItemDetailScreen extends StatelessWidget {
                   border: Border.all(),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: Text(
-                  'Price : ${selectedItem.price}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Price : ${selectedItem.price}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    ...textWidgets,
+                    // Text(
+                    //   'Price : ${selectedItem.price}',
+                    //   style: const TextStyle(
+                    //     fontSize: 18,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                  ],
                 ),
               ),
               const SizedBox(

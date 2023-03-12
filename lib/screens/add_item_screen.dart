@@ -114,14 +114,17 @@ class _AddItemScreenState extends State<AddItemScreen> {
           ),
           descController.text.trim(),
           savedImage!,
+          fieldValuePair,
         );
       } else if (isEdit) {
         final ItemModel updatedValue = ItemModel(
-            id: itemData!.id,
-            name: nameController.text,
-            price: double.parse(priceController.text),
-            description: descController.text,
-            image: selectedImage!);
+          id: itemData!.id,
+          name: nameController.text,
+          price: double.parse(priceController.text),
+          description: descController.text,
+          image: selectedImage!,
+          extraData: fieldValuePair
+        );
         Provider.of<ItemProvider>(context, listen: false)
             .update(itemData.id, updatedValue);
       }

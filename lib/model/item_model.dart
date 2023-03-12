@@ -7,6 +7,7 @@ class ItemModel {
   final double price;
   final String description;
   final File image;
+  final Map<String, dynamic>? extraData;
 
   ItemModel({
     required this.id,
@@ -14,5 +15,6 @@ class ItemModel {
     required this.price,
     required this.description,
     required this.image,
+    required this.extraData,
   });
 }
