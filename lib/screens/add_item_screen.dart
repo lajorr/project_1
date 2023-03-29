@@ -100,13 +100,30 @@ class _AddItemScreenState extends State<AddItemScreen> {
       descController.text = itemData.description;
       selectedImage = itemData.image;
     }
+    void showError(String msg) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
 
     void onDone(BuildContext context) {
       if (!isEdit) {
-        if (nameController.text.trim().isEmpty ||
-            priceController.text.isEmpty) {
+        if (nameController.text.trim().isEmpty) {
+          showError('Enter Name');
           return;
         }
+        if (priceController.text.trim().isEmpty) {
+          showError('Enter Price');
+          return;
+        }
+        if (savedImage == null) {
+          showError('Insert an Image');
+          return;
+        }
+
         Provider.of<ItemProvider>(context, listen: false).addItem(
           nameController.text.trim(),
           double.parse(
@@ -360,6 +377,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     return containers.map(
       (container) {
         final index = containers.indexOf(container);
+
         return Container(
           padding: const EdgeInsets.only(top: 3),
           height: 85,
