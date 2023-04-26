@@ -15,7 +15,7 @@ class ItemDetailScreen extends StatelessWidget {
 
     final id = ModalRoute.of(context)!.settings.arguments as String?;
     final selectedItem = Provider.of<ItemProvider>(context).findById(id!);
-    final mapLen = selectedItem.extraData!.length;
+    // final mapLen = selectedItem.extraData!.length;
 
     void onDelete() {
       Provider.of<ItemProvider>(context, listen: false).delete(selectedItem);
@@ -53,6 +53,7 @@ class ItemDetailScreen extends StatelessWidget {
       );
       return MapEntry(key, value);
     });
+    print("idk whut $d");
 
     descController.text = selectedItem.description;
     return Scaffold(
