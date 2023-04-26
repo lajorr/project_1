@@ -24,8 +24,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final descController = TextEditingController();
   File? selectedImage;
   File? savedImage;
+
+  List<Widget> fields = [];
+
+  // Map<String, dynamic>? extraField;
+
   var isEdit = true;
-  Map<String, String> fieldValuePair = {};
+  Map<String, dynamic> fieldValuePair = {};
 
   void _addContainers() {
     setState(() {
@@ -71,7 +76,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
       final image = await picker.pickImage(
         source: source,
       );
-      print(image);
 
       final dir = await syspath.getApplicationDocumentsDirectory();
       final fileName = basename(image!.path);
@@ -99,14 +103,58 @@ class _AddItemScreenState extends State<AddItemScreen> {
       priceController.text = itemData.price.toString();
       descController.text = itemData.description;
       selectedImage = itemData.image;
+      fieldValuePair = itemData.extraData!;
+
+      fields = fieldValuePair.entries.map((e) {
+        final controller = TextEditingController();
+        controller.text = e.value;
+        return TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: e.key,
+          ),
+          onEditingComplete: () {
+            if (controller.text.isNotEmpty) {
+              fieldValuePair.addAll(
+                {controller.text: ''},
+              );
+            }
+          },
+          onTapOutside: (event) {
+            if (controller.text.isNotEmpty) {
+              fieldValuePair.addAll(
+                {controller.text: ''},
+              );
+            }
+          },
+        );
+      }).toList();
+    }
+    void showError(String msg) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
 
     void onDone(BuildContext context) {
       if (!isEdit) {
-        if (nameController.text.trim().isEmpty ||
-            priceController.text.isEmpty) {
+        if (nameController.text.trim().isEmpty) {
+          showError('Enter Name');
           return;
         }
+        if (priceController.text.trim().isEmpty) {
+          showError('Enter Price');
+          return;
+        }
+        if (savedImage == null) {
+          showError('Insert an Image');
+          return;
+        }
+
         Provider.of<ItemProvider>(context, listen: false).addItem(
           nameController.text.trim(),
           double.parse(
@@ -118,12 +166,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
         );
       } else if (isEdit) {
         final ItemModel updatedValue = ItemModel(
-            id: itemData!.id,
-            name: nameController.text,
-            price: double.parse(priceController.text),
-            description: descController.text,
-            image: selectedImage!,
-            extraData: fieldValuePair);
+          id: itemData!.id,
+          name: nameController.text,
+          price: double.parse(priceController.text),
+          description: descController.text,
+          image: selectedImage!,
+          extraData: fieldValuePair,
+        );
         Provider.of<ItemProvider>(context, listen: false)
             .update(itemData.id, updatedValue);
       }
@@ -218,6 +267,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   labelText: 'Price',
                 ),
               ),
+              const SizedBox(
+                height: 5,
+              ),
+              if (isEdit) ...fields,
               const SizedBox(
                 height: 5,
               ),
@@ -360,6 +413,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
     return containers.map(
       (container) {
         final index = containers.indexOf(container);
+
         return Container(
           padding: const EdgeInsets.only(top: 3),
           height: 85,

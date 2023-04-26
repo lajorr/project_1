@@ -31,7 +31,7 @@ class ItemProvider with ChangeNotifier {
     double price,
     String description,
     File image,
-    Map<String, String>? extraField,
+    Map<String, dynamic>? extraField,
   ) {
     final newItem = ItemModel(
       id: DateTime.now().toString(),
@@ -118,6 +118,7 @@ class ItemProvider with ChangeNotifier {
       'price': updatedItem.price,
       'description': updatedItem.description,
       'image': updatedItem.image.path,
+      'extra': updatedItem.extraData,
     }, updatedItem.id);
   }
 }
